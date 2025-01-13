@@ -93,6 +93,9 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.hilt.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     kapt(libs.hilt.compiler)
 }
 
