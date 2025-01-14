@@ -13,6 +13,7 @@ object UserMapper {
         val location = this.location
         val locationStreet = this.location.street
         return UserModel(
+            id = this.id?.value.toString() ,
             name = Name(
                 firstName = name.first,
                 lastName = name.last,

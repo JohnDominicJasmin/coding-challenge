@@ -1,5 +1,6 @@
 package com.example.codingchallenge.data.repository
 
+import com.example.codingchallenge.core.di.Constants.NUMBER_OF_RETRIES
 import com.example.codingchallenge.data.RandomUserApiService
 import com.example.codingchallenge.data.mapper.UserMapper.toUserModel
 import com.example.codingchallenge.domain.model.UserModel
@@ -19,10 +20,10 @@ class UserRepositoryImpl(
         emit(
             kotlin.runCatching {
                val userDto  =  api.getUsers(page, numberOfResults)
-                userDto.results.map { it.toUserModel() }
+                userDto.results.filter { it.id.value != null }.map { it.toUserModel() }
             }
         )
-    }.retry(3) { cause ->
+    }.retry(NUMBER_OF_RETRIES) { cause ->
         cause is IOException || cause is HttpException
     }.catch { cause ->
         emit(Result.failure(cause))
