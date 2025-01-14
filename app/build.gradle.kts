@@ -98,6 +98,9 @@ dependencies {
 
     implementation (libs.google.gson)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
 }
 
 kapt {
