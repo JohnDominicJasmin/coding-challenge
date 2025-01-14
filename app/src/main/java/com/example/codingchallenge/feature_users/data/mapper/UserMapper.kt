@@ -1,36 +1,35 @@
 package com.example.codingchallenge.feature_users.data.mapper
 
-import android.provider.ContactsContract.Profile
-import com.example.codingchallenge.feature_users.data.data_source.network.dto.Location
-import com.example.codingchallenge.feature_users.data.data_source.network.dto.Picture
+import com.example.codingchallenge.feature_users.data.data_source.network.dto.ResultDto
 import com.example.codingchallenge.feature_users.domain.model.Address
 import com.example.codingchallenge.feature_users.data.data_source.network.dto.Name as NameDto
 import com.example.codingchallenge.feature_users.domain.model.Name
 import com.example.codingchallenge.feature_users.domain.model.ProfilePicture
+import com.example.codingchallenge.feature_users.domain.model.UserModel
 
 object UserMapper {
-    fun mapUserDtoToUser(userDto: NameDto): Name {
-        return Name(
-            firstName = userDto.first,
-            lastName = userDto.last,
-            title = userDto.title
+    fun ResultDto.toUserModel(): UserModel {
+        val name = this.name
+        val location = this.location
+        val locationStreet = this.location.street
+        return UserModel(
+            name = Name(
+                firstName = name.first,
+                lastName = name.last,
+                title = name.title
+            ),
+            address = Address(
+                streetNumber = locationStreet.number.toString(),
+                streetName = locationStreet.name,
+                city = location.city,
+                state = location.state,
+                postcode = location.postcode.toString(),
+                country = location.country
+            ),
+            profilePicture = ProfilePicture("")
         )
     }
 
-    fun mapLocationDtoToAddress(location: Location): Address {
-        return Address(
-            streetNumber = location.street.number.toString(),
-            streetName = location.street.name,
-            city = location.city,
-            state = location.state,
-            postcode = location.postcode.toString(),
-            country = location.country
-        )
-    }
 
-    fun pictureToProfilePicture(picture: Picture): ProfilePicture {
-        return ProfilePicture(
-            photoUrl = picture.large
-        )
-    }
+
 }
