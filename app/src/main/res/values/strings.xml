@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CodingChallenge</string>
+    <string name="how_many_users_do_you_need">How many users?</string>
+    <string name="get_users">Get Users</string>
+    <string name="email_address">Email Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="username">Username</string>
+    <string name="registered">Registered</string>
 </resources>
