@@ -1,11 +1,9 @@
-package com.example.codingchallenge.presentation.users.ui
+package com.example.codingchallenge.presentation.users.ui.screens
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,9 +12,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,27 +28,38 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.codingchallenge.R
 import com.example.codingchallenge.core.di.Constants.DEFAULT_NUMBER_OF_USERS
 import com.example.codingchallenge.domain.model.Address
 import com.example.codingchallenge.domain.model.Name
 import com.example.codingchallenge.domain.model.ProfilePicture
 import com.example.codingchallenge.domain.model.UserModel
+import com.example.codingchallenge.presentation.users.ui.UserEvent
+import com.example.codingchallenge.presentation.users.ui.state.UserState
 import com.example.codingchallenge.presentation.users.ui.components.UserInputField
 import com.example.codingchallenge.presentation.users.ui.components.UserList
+import com.example.codingchallenge.presentation.users.ui.state.UserUiState
 import com.example.codingchallenge.presentation.users.viewmodel.UsersViewModel
+import com.example.codingchallenge.ui.navigation.Screens
+import com.example.codingchallenge.ui.navigation.navigateScreen
 
 @Composable
-fun UsersScreen(viewModel: UsersViewModel = hiltViewModel()) {
-    val userState by viewModel.userState.collectAsStateWithLifecycle()
+fun UsersScreen(viewModel: UsersViewModel = hiltViewModel(), navController: NavController) {
+    val userScreenState by viewModel.userState.collectAsState(initial = UserUiState())
+
     var numberOfUsers  by rememberSaveable { mutableStateOf<Int>(DEFAULT_NUMBER_OF_USERS) }
     UsersScreenContent(
-        userState = userState,
+        userScreenState = userScreenState,
         numberOfUsers = numberOfUsers,
         setNumberOfUsers = { numberOfUsers = it }, getUsers = {
             viewModel.onEvent(event  = UserEvent.GetUsers(
                 page = 1,
+                numberOfResult = numberOfUsers
+            ))
+        }, onClickUser = { user ->
+            navController.navigateScreen(Screens.UserDetails.passArguments(
+                id = user.id,
                 numberOfResult = numberOfUsers
             ))
         })
@@ -59,9 +68,9 @@ fun UsersScreen(viewModel: UsersViewModel = hiltViewModel()) {
 
 @Composable
 fun UsersScreenContent(
-    userState: UserState<List<UserModel>>,
+    userScreenState: UserUiState,
     numberOfUsers: Int?,
-    setNumberOfUsers: (Int) -> Unit, getUsers: () -> Unit) {
+    setNumberOfUsers: (Int) -> Unit, getUsers: () -> Unit, onClickUser: (UserModel) -> Unit) {
     val inputPlaceholder = stringResource(id = R.string.how_many_users_do_you_need)
     val getUsersText = stringResource(id = R.string.get_users)
     Column(
@@ -100,30 +109,30 @@ fun UsersScreenContent(
                 Text(text = getUsersText)
             }
         }
-        when (userState) {
+        when (userScreenState.userState) {
             is UserState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             }
 
             is UserState.Success -> {
-                val users = (userState as UserState.Success).data
+                val users = (userScreenState.userState as UserState.Success).data
                 if(users.isEmpty()){
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
                             text = "No users available",
                             style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f) // Light gray color
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                         )
 
                     }
                 }else{
-                    UserList(users = users)
+                    UserList(users = users, onClickUser = onClickUser)
 
                 }
             }
 
             is UserState.Failure -> {
-                val exception = (userState as UserState.Failure).exception
+                val exception = (userScreenState.userState as UserState.Failure).exception
                 Text(
                     text = "Error: ${exception.message}",
                     modifier = Modifier.padding(16.dp)
@@ -158,10 +167,10 @@ fun PreviewUsersScreen() {
         )
     )
 
-    UsersScreenContent(userState = mockUserState, numberOfUsers = 0, setNumberOfUsers = {
+    UsersScreenContent(userScreenState = UserUiState(), numberOfUsers = 0, setNumberOfUsers = {
         textState = it
     }, getUsers = {
 
-    })
+    }, onClickUser = {})
 }
 

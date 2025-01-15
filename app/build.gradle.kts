@@ -102,6 +102,16 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.hiltNavigationCompose)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")  // Make sure to use the version compatible with your project
+
+    // Other test dependencies
+    testImplementation("junit:junit:4.13.2")
+//    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("io.mockk:mockk:1.13.16")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    testImplementation("com.google.truth:truth:1.1")
+
 }
 
 kapt {

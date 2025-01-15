@@ -11,10 +11,21 @@ import androidx.compose.ui.unit.dp
 import com.example.codingchallenge.domain.model.UserModel
 
 @Composable
-fun UserList(users: List<UserModel>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(users, ) { user ->
-            UserCard(photoUrl = user.profilePicture.photoUrl, fullName = user.name.fullName, address = user.address.fullAddress, onClick = {})
+fun UserList(
+    users: List<UserModel>,
+    modifier: Modifier = Modifier,
+    onClickUser: (UserModel) -> Unit
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(users, key = { it.id }) { user ->
+            UserCard(
+                photoUrl = user.profilePicture.photoUrl,
+                fullName = user.name.fullName,
+                address = user.address.fullAddress,
+                onClick = { onClickUser(user) }
+            )
         }
     }
 }

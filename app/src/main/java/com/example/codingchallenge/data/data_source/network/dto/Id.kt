@@ -9,5 +9,5 @@ data class Id(
     @SerializedName("name")
     val name: String,
     @SerializedName("value")
-    val value: String
+    val value: String? = null
 )
