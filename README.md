@@ -15,6 +15,9 @@
   <li>Address</li>
   <li>Profile Picture</li>
 </ul>
+<img src="https://github.com/user-attachments/assets/44fdb1de-2e4b-4c8d-b90a-33694f7642b2" alt="image" width="30%"/>
+
+
 
 <h3 style="font-size: 24px; font-weight: bold;">2. User Details</h3>
 <p>The User Details screen shows detailed information for a selected user, including:</p>
@@ -28,6 +31,9 @@
   <li>Registration Date</li>
   <li>Profile Picture</li>
 </ul>
+
+<img src="https://github.com/user-attachments/assets/9e6169c2-5ccf-41c5-aa1e-626aee6b3694" alt="image" width="30%"/>
+
 
 <h2 style="font-size: 28px; font-weight: bold;">User Flow</h2>
 <ul>
